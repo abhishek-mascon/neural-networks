@@ -1,7 +1,7 @@
 import numpy as np
 import chainer
 import six
-from pima_mlp import Build_Network, SoftmaxClassifier_Loss
+from pima_mlp import Build_Network
 from sklearn.model_selection import train_test_split
 from chainer import serializers
 import chainer.functions as F
@@ -10,7 +10,8 @@ def prepare_data():
 	dataset = np.loadtxt("pima-diabetes.csv", delimiter=",")
 	input_data_x = dataset[:,0:8]
 	input_label_y = dataset[:,8]
-	X_train, X_test, y_train, y_test = train_test_split(input_data_x, input_label_y, test_size=0.33, random_state=42)
+	X_train, X_test, y_train, y_test = train_test_split(input_data_x, \
+	input_label_y, test_size=0.33, random_state=42)
 	return X_train, X_test, y_train, y_test
 
 
@@ -25,7 +26,6 @@ def train_network(X_train, X_test, y_train, y_test):
 	model = Build_Network(neuron_units, neuron_units_out)
 	optimizer = chainer.optimizers.Adam()
 	optimizer.setup(model)
-	classifier_model = SoftmaxClassifier_Loss(model)
 
 	for epoch in range(1, n_epoch + 1):
 		batch_count = 0
@@ -65,7 +65,6 @@ def train_network(X_train, X_test, y_train, y_test):
                 test_epoch_accuracy = test_epoch_accuracy / (test_N/batch_size)
                 print "Test Loss: "+ str(float(test_epoch_loss.data)) + " Test Accuracy: "+ str(float(test_epoch_accuracy.data))+ '\n'
 
-	serializers.save_npz('pima_classifier_mlp.model', classifier_model)
 	serializers.save_npz('pima_mlp.model', model)
 	serializers.save_npz('pima_mlp.state', optimizer)
 	print ("Completed Training !!")
