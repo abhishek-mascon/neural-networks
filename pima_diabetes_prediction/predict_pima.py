@@ -69,9 +69,11 @@ def train_network(X_train, X_test, y_train, y_test):
 		"""Test batch loop"""
                 for i in six.moves.range(0, test_N, batch_size):
                         test_batch_count += 1
+			"""preparing and passing Test Data through network"""
                         x_test = chainer.Variable(np.array(X_test[i:i + batch_size], dtype=np.float32))
                         t_test = chainer.Variable(np.array(y_test[i:i + batch_size], dtype=np.int32))
                         x1_test = model(x_test)
+			"""Computing Test Loss"""
                         loss = F.softmax_cross_entropy(x1_test, t_test)
                         test_epoch_loss = test_epoch_loss + loss
                         accuracy = F.accuracy(x1_test, t_test)
